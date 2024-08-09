@@ -1,7 +1,7 @@
 export function logarTempoDeExecucao(){
   return function(
     target: any,
-    propertyKey: string,
+    propertyKey: string,  // nome do método
     descriptor: PropertyDescriptor
   ){
     const metodoOriginal = descriptor.value; // guarda o método original
@@ -15,8 +15,6 @@ export function logarTempoDeExecucao(){
     return descriptor;
   }
 }
-
-
 
 // Esqueleto de um decorator
 // export function logarTempoDeExecucao(){
