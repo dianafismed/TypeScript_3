@@ -38,9 +38,11 @@ export class NegociacaoController {
     this.atualizaView();
   }
 
+
   private ehDiaUtil(data: Date) {
     return data.getDay() > DiasDaSemana.DOMINGO && data.getDay() < DiasDaSemana.SABADO;
   }
+
 
   private limparFormulario(): void {
     this.inputData.value = '';
@@ -49,6 +51,7 @@ export class NegociacaoController {
     this.inputData.focus();
   }
 
+  
   private atualizaView(): void {
     this.negociacoesView.update(this.negociacoes);
     this.mensagemView.update('Negociação adicionada com sucesso');
