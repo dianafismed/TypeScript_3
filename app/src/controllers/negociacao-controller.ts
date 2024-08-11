@@ -19,6 +19,7 @@ export class NegociacaoController {
   private mensagemView = new MensagemView('#mensagemView');
 
   constructor() {
+    // Como fiz o decorator @domInjector, eu não preciso mais usar estas chamadas
     //this.inputData = <HTMLInputElement>document.querySelector('#data');
     //this.inputQuantidade = document.querySelector('#quantidade') as HTMLInputElement;
     //this.inputValor = document.querySelector('#valor') as HTMLInputElement;
