@@ -2,9 +2,9 @@ import { domInjector } from '../decorators/dom-injector.js';
 import { inspect } from '../decorators/inspect.js';
 import { logarTempoDeExecucao } from '../decorators/logar-tempo-de-execucao.js';
 import { DiasDaSemana } from '../enums/dias-da-semana.js';
-import { NegociacaoDoDia } from '../interfaces/negociacao-do-dia.js';
 import { Negociacao } from '../models/negociacao.js';
 import { Negociacoes } from '../models/negociacoes.js';
+import { NegociacoesService } from '../services/negociacoes-service.js';
 import { MensagemView } from '../views/mensagem-view.js';
 import { NegociacoesView } from '../views/negociacoes-view.js';
 
@@ -18,6 +18,7 @@ export class NegociacaoController {
   private negociacoes = new Negociacoes();
   private negociacoesView = new NegociacoesView('#negociacoesView');
   private mensagemView = new MensagemView('#mensagemView');
+  private negociacoesService = new NegociacoesService;
 
   constructor() {
     // Como fiz o decorator @domInjector, eu não preciso mais usar estas chamadas
@@ -48,26 +49,13 @@ export class NegociacaoController {
 
 
   public importarDados(): void{
-    // fiz uma requisicao
-    fetch('http://localhost:8080/dados')
-      .then(res => res.json())  // recebi os dados e transformei em json
-      .then((dados: NegociacaoDoDia[]) =>{  // recebi um array do tipo negociacao_do-dia
-        return dados.map(dadoDeHoje => {
-          // retorna um array em que cada tipo eh uma Negociacao
-          return new Negociacao(
-            new Date(),
-            dadoDeHoje.vezes,
-            dadoDeHoje.montante
-          )
-        })
-      })
-      .then(negociacoesDeHoje => {
-        // faço um array de negociacoes
-        for (let negociacao of negociacoesDeHoje){
-          this.negociacoes.adiciona(negociacao);
-        }
-        this.negociacoesView.update(this.negociacoes);
-      });
+    this.negociacoesService.obterNegociacoesDoDia()
+    .then(negociacoesDeHoje => {
+      for (let negociacao of negociacoesDeHoje){  // faço um array de negociacoes
+        this.negociacoes.adiciona(negociacao);
+      }
+      this.negociacoesView.update(this.negociacoes);
+    });
   }
 
 
