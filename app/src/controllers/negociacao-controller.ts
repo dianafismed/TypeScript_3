@@ -2,6 +2,7 @@ import { domInjector } from '../decorators/dom-injector.js';
 import { inspect } from '../decorators/inspect.js';
 import { logarTempoDeExecucao } from '../decorators/logar-tempo-de-execucao.js';
 import { DiasDaSemana } from '../enums/dias-da-semana.js';
+import { negociacaoDoDia } from '../interfaces/negociacao-do-dia.js';
 import { Negociacao } from '../models/negociacao.js';
 import { Negociacoes } from '../models/negociacoes.js';
 import { MensagemView } from '../views/mensagem-view.js';
@@ -43,6 +44,30 @@ export class NegociacaoController {
     this.negociacoes.adiciona(negociacao);
     this.limparFormulario();
     this.atualizaView();
+  }
+
+
+  public importarDados(): void{
+    // fiz uma requisicao
+    fetch('http://localhost:8080/dados')
+      .then(res => res.json())  // recebi os dados e transformei em json
+      .then((dados: negociacaoDoDia[]) =>{  // recebi um array do tipo negociacao_do-dia
+        return dados.map(dadoDeHoje => {
+          // retorna um array em que cada tipo eh uma Negociacao
+          return new Negociacao(
+            new Date(),
+            dadoDeHoje.vezes,
+            dadoDeHoje.montante
+          )
+        })
+      })
+      .then(negociacoesDeHoje => {
+        // faço um array de negociacoes
+        for (let negociacao of negociacoesDeHoje){
+          this.negociacoes.adiciona(negociacao);
+        }
+        this.negociacoesView.update(this.negociacoes);
+      });
   }
 
 
