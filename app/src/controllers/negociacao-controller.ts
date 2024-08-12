@@ -37,12 +37,10 @@ export class NegociacaoController {
       this.inputQuantidade.value,
       this.inputValor.value
     );
-  
     if (!this.ehDiaUtil(negociacao.data)) {
       this.mensagemView.update('Apenas negociações em dias úteis são aceitas');
       return ;
     }
-
     this.negociacoes.adiciona(negociacao);
     imprimir(negociacao, this.negociacoes);
     this.limparFormulario();
@@ -52,6 +50,14 @@ export class NegociacaoController {
 
   public importarDados(): void{
     this.negociacoesService.obterNegociacoesDoDia()
+    // esse bloco then verifica se a importacao ja foi feita, se ja foi, nao sera mais feita
+    .then(negociacoesDeHoje =>{
+      return negociacoesDeHoje.filter(negociacaoDeHoje => {
+        return !this.negociacoes
+                    .lista()
+                    .some(negociacao => negociacao.ehIgual(negociacaoDeHoje))
+      });
+    })
     .then(negociacoesDeHoje => {
       for (let negociacao of negociacoesDeHoje){  // faço um array de negociacoes
         this.negociacoes.adiciona(negociacao);
@@ -78,6 +84,9 @@ export class NegociacaoController {
     this.negociacoesView.update(this.negociacoes);
     this.mensagemView.update('Negociação adicionada com sucesso');
   }
+
+
+  
 }
 
 
